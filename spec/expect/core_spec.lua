@@ -1,0 +1,314 @@
+local expect = require('expect')
+
+local function case(name, testedFunction, failure, plain)
+  it('should ' .. (failure and 'fail ' or 'pass ') .. name, function()
+    if failure then
+      expect(testedFunction).to.failWith(failure, plain)
+    else
+      expect(testedFunction).to.Not.fail()
+    end
+  end)
+end
+
+describe('expect', function()
+  for _, chainableWord in pairs({'a', 'also', 'and', 'at', 'be', 'been', 'but', 'does', 'has', 'have', 'is', 'that',
+                                 'to', 'with', 'which'}) do
+    describe(chainableWord, function()
+      case('without changing the behavior of the test', function()
+        expect(1 + 1)[chainableWord].equal(2)
+      end)
+    end)
+  end
+
+  describe('a', function()
+    describe('(positive)', function()
+      case('if target has the expected type', function()
+        expect('foo').to.be.a('string')
+      end)
+
+      case('if target has another type', function()
+        expect(12).to.be.a('string')
+      end, 'expected %(number%) 12 to be a string$')
+    end)
+
+    describe('(negative)', function()
+      case('if target has the expected type', function()
+        expect(12).to.Not.be.a('number')
+      end, 'expected %(number%) 12 not to be a number$')
+
+      case('if target has another type', function()
+        expect('foo').to.Not.be.a('number')
+      end)
+    end)
+  end)
+
+  describe('ok', function()
+    case('if target is truthy', function()
+      expect('foo').to.be.ok()
+    end)
+
+    case('if target is falsy', function()
+      expect(nil).to.be.ok()
+    end, 'expected (nil) to be truthy', true)
+
+    case('if target is truthy with negative test', function()
+      expect('foo').to.Not.be.ok()
+    end, 'expected (string) \'foo\' to be falsy', true)
+  end)
+
+  describe('true', function()
+    case('if target is true', function()
+      expect(true).to.be.True()
+    end)
+
+    case('if target is false', function()
+      expect(nil).to.be.True()
+    end, 'expected (nil) to be true', true)
+
+    case('if target is true with negative test', function()
+      expect(true).to.Not.be.True()
+    end, 'expected (boolean) true to be false', true)
+  end)
+
+  describe('false', function()
+    case('if target is false', function()
+      expect(false).to.be.False()
+    end)
+
+    case('if target is true', function()
+      expect(true).to.be.False()
+    end, 'expected (boolean) true to be false', true)
+
+    case('if target is false with negative test', function()
+      expect(false).to.Not.be.False()
+    end, 'expected (boolean) false to be true', true)
+  end)
+
+  describe('nil', function()
+    case('if target is nil', function()
+      expect(nil).to.be.Nil()
+    end)
+
+    case('if target is not nil', function()
+      expect('foo').to.be.Nil()
+    end, 'expected (string) \'foo\' to be nil', true)
+
+    case('if target is nil with negative test', function()
+      expect(nil).to.Not.be.Nil()
+    end, 'expected (nil) not to be nil', true)
+  end)
+
+  describe('equal', function()
+    describe('(positive)', function()
+      case('if objects are strictly the same', function()
+        expect('foo').to.equal('foo')
+      end)
+
+      case('if objects are not the same', function()
+        expect({}).to.equal({})
+      end, 'expected %(table: .*%) { } to equal %(table: .*%) { }$')
+    end)
+
+    describe('(negative)', function()
+      case('if objects are strictly the same', function()
+        expect('foo').to.Not.equal('foo')
+      end, 'expected %(string%) \'foo\' to not equal %(string%) \'foo\'$')
+
+      case('if objects are not the same', function()
+        expect(12).to.Not.equal('foo')
+      end)
+    end)
+
+    describe('(deep)', function()
+      case('if objects are deeply equal', function()
+        expect({
+          a = 1
+        }).to.deep.equal({
+          a = 1
+        })
+      end)
+
+      case('with negative test if objects are deeply equal', function()
+        expect({
+          a = 1
+        }).to.Not.deep.equal({
+          a = 1
+        })
+      end, 'expected %(table: .*%[a%] = 1.*to not deeply equal %(table: .*%[a%] = 1')
+
+      case('if objects are not deeply equal', function()
+        expect({
+          'This should fail',
+          failure = {
+            deep = {
+              again = 'yes',
+              deeper = {
+                diff = 'none'
+              }
+            },
+            here = {
+              again = 'yes',
+              deeper = {
+                diff = 'here'
+              }
+            }
+          }
+        }).to.deep.equal({
+          'This should fail',
+          failure = {
+            deep = {
+              again = 'yes',
+              deeper = {
+                diff = 'none'
+              }
+            },
+            here = {
+              again = 'yes',
+              deeper = {
+                diff = 'there'
+              }
+            }
+          }
+        })
+      end, 'expected %(table.*more.*%*.*%[diff%].*here.* to deeply equal %(table: .*%) .*more.*there')
+    end)
+  end)
+
+  describe('match', function()
+    case('if target matches pattern', function()
+      expect('foo').to.match('f.o$')
+    end)
+
+    case('if target does not match pattern', function()
+      expect('foo').to.match('bar')
+    end, 'expected (string) \'foo\' to match bar', true)
+
+    case('if target matches pattern with negative test', function()
+      expect('foo').to.Not.match('f.o$')
+    end, 'expected (string) \'foo\' to not match f.o$', true)
+  end)
+
+  describe('fail', function()
+    -- Override default, because this function cannot be tested by itself
+    local function case(name, testedFunction, failure)
+      it('should ' .. (failure and 'fail ' or 'pass ') .. name, function()
+        local ok, res = pcall(testedFunction)
+        if failure then
+          expect(ok, 'expected to fail').to.be.False()
+          expect(res).to.match(failure)
+        else
+          expect(ok, 'call result').to.be.True()
+        end
+      end)
+    end
+
+    local function failingFunction()
+      error('Oh no! This function is failing!')
+    end
+
+    local function successfulFunction()
+    end
+
+    describe('(positive)', function()
+      case('with failing function', function()
+        expect(failingFunction).to.fail()
+      end)
+
+      case('with function throwing matching error', function()
+        expect(failingFunction).to.failWith('is%sfailing')
+      end)
+
+      case('with function throwing exact error', function()
+        expect(failingFunction).to.failWith('is failing', true)
+      end)
+
+      case('with function throwing expected number as string', function()
+        expect(function()
+          error('12')
+        end).to.failWith(12)
+      end)
+
+      case('with function throwing expected number', function()
+        expect(function()
+          error(12)
+        end).to.failWith(12)
+      end)
+
+      case('with function throwing expected table', function()
+        expect(function()
+          error({
+            'item1',
+            key = 'value1'
+          })
+        end).to.failWith({
+          'item1',
+          key = 'value1'
+        })
+      end)
+
+      case('with successful function', function()
+        expect(successfulFunction).to.fail()
+      end, 'expected function.* to fail, but it was successful$')
+
+      case('with successful function, even if an error was specified', function()
+        expect(successfulFunction).to.failWith('any error')
+      end, 'expected function.* to fail, but it was successful$')
+
+      case('with function throwing non matching error', function()
+        expect(failingFunction).to.failWith('is successful')
+      end,
+        'expected function.* to fail with error %(string%) \'is successful\', but %(string%) \'Oh no! This function is failing!\' was thrown$')
+
+      case('with function throwing wrong error', function()
+        expect(failingFunction).to.failWith('is%sfailing', true)
+      end,
+        'expected function.* to fail with error %(string%) \'is%%sfailing\', but %(string%) \'Oh no! This function is failing!\' was thrown$')
+
+      case('with function throwing wrong number as string', function()
+        expect(function()
+          error('12')
+        end).to.failWith(144)
+      end, 'expected function.* to fail with error %(number%) 144, but %(string%) \'12\' was thrown$')
+
+      case('with function throwing wrong number', function()
+        expect(function()
+          error(12)
+        end).to.failWith(144)
+      end, 'expected function.* to fail with error %(number%) 144, but') -- Cannot test more, lua 5.1 throws a string anyway
+
+      case('with function throwing wrong table', function()
+        expect(function()
+          error({
+            'This should fail',
+            failure = true
+          })
+        end).to.failWith({
+          'This should fail',
+          failure = false
+        })
+      end, 'expected function.* to fail with error %(table: .*%) .*false.*, but %(table: .*%) .*true.* was thrown$')
+    end)
+
+    describe('(negative)', function()
+      case('with successful function', function()
+        expect(successfulFunction).to.Not.fail()
+      end)
+
+      case('with successful function, even if an error was specified', function()
+        expect(successfulFunction).to.Not.failWith('any error')
+      end)
+
+      case('with function throwing non matching error', function()
+        expect(failingFunction).to.Not.failWith('is successful')
+      end)
+
+      case('with failing function', function()
+        expect(failingFunction).to.Not.fail()
+      end, 'expected function.* not to fail, but %(string%) \'Oh no! This function is failing!\' was thrown$')
+
+      case('with function throwing matching error', function()
+        expect(failingFunction).to.Not.failWith('is failing')
+      end, 'expected function.* not to fail with error %(string%) \'is failing\'')
+    end)
+  end)
+end)
