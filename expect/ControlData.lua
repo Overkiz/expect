@@ -1,4 +1,5 @@
-local FailureMessage = require("expect.FailureMessage")
+local FailureMessage = require('expect.FailureMessage')
+local Utils = require('expect.Utils')
 
 --- Metatable for the ControlData objects.
 local ControlDataMT = {}
@@ -38,7 +39,7 @@ end
 --- Check if the actual object is callable.
 --- @param checkNegation boolean|nil Indicate if negation (i.e. `not`) should be checked.
 function ControlData:checkIfCallable(checkNegation)
-  self:assert(type(self.actual):lower() == 'function' or type(getmetatable(self.actual).__call) ~= 'function',
+  self:assert(Utils.isCallable(self.actual),
     FailureMessage('expected {#} to be callable'),
     checkNegation and FailureMessage('expected {#} not to be callable') or nil, 2)
 end
@@ -60,7 +61,7 @@ end
 --- @param message FailureMessage The failure message to display.
 --- @param level integer|nil The level of the error.
 function ControlData:fail(message, level)
-  error("Not implemented") -- Implemented externally
+  error('Not implemented') -- Implemented externally
 end
 
 return ControlData

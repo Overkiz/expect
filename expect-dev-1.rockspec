@@ -20,6 +20,7 @@ build = {
     ["expect.DiffTable"] = "expect/DiffTable.lua",
     ["expect.Expect"] = "expect/Expect.lua",
     ["expect.FailureMessage"] = "expect/FailureMessage.lua",
+    ["expect.Utils"] = "expect/Utils.lua",
     ["expect.core"] = "expect/core.lua",
   },
 }
