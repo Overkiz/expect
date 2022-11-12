@@ -172,6 +172,26 @@ return function(expect)
   expect.addMethod('gte', expectLeast)
   expect.addMethod('greaterThanOrEqual', expectLeast)
 
+  -- Check object is below value
+  local function expectBelow(controlData, expected)
+    local params = {
+      expected = expected
+    }
+    if controlData.doLength then
+      params.actual = controlData:getLength()
+      controlData:assert(params.actual < expected,
+        FailureMessage('expected {#} to have a length below {!expected} but got {!actual}', params),
+        FailureMessage('expected {#} to not have a length below {!expected}', params))
+    else
+      controlData:checkType('number', false)
+      controlData:assert(controlData.actual < expected, FailureMessage('expected {#} to be below {!expected}', params),
+        FailureMessage('expected {#} to be at least {!expected}', params))
+    end
+  end
+  expect.addMethod('below', expectBelow)
+  expect.addMethod('lt', expectBelow)
+  expect.addMethod('lessThan', expectBelow)
+
   -- Check object length
   local function expectLengthChain(controlData)
     controlData.previousDoLength = controlData.doLength

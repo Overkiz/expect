@@ -86,6 +86,23 @@ expect({1, 2, 3}).to.have.a.length.above(2)
 
 The aliases `gt` and `greaterThan` can be used interchangeably with `above`.
 
+## below(n)
+
+Asserts that the target is a number less than the given number `n`.
+
+```lua
+expect(1).to.be.below(2)
+```
+
+Add `lengthOf` earlier in the chain to assert that the target’s length is less than the given number `n`.
+
+```lua
+expect("foo").to.have.a.length.below(4)
+expect({1, 2, 3}).to.have.a.length.below(4)
+```
+
+The aliases `lt` and `lessThan` can be used interchangeably with `below`.
+
 ## empty()
 
 When the target is a string, asserts that the target’s length is zero.
