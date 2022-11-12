@@ -95,6 +95,21 @@ return function(expect)
       FailureMessage('expected {#} not to be nil'))
   end)
 
+  -- Check object is empty
+  expect.addMethod('empty', function(controlData)
+    local actualType = type(controlData.actual)
+    local empty = false
+    if actualType == 'string' then
+      empty = controlData.actual:len() == 0
+    elseif actualType == 'table' then
+      empty = next(controlData.actual) == nil
+    else
+      controlData:fail(FailureMessage('expected {#} to be a string or a table'))
+    end
+
+    controlData:assert(empty, FailureMessage('expected {#} to be empty'), FailureMessage('expected {#} not to be empty'))
+  end)
+
   -- Check object is strictly or deeply equal to given value
   local function expectEqual(controlData, expected)
     if controlData.deep then

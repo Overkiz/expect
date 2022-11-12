@@ -69,6 +69,20 @@ expect('foo').to.be.a('string')
 
 The alias `.an` can be used interchangeably with `.a`.
 
+## empty()
+
+When the target is a string, asserts that the target’s length is zero.
+
+```lua
+expect('').to.be.empty()
+```
+
+When the target is an object, asserts that the target does not have any property.
+
+```lua
+expect({}).to.be.empty()
+```
+
 ## equal(value)
 
 Asserts that the target is strictly or deeply (if `deep` is used earlier in the chain) equal to the given
