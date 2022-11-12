@@ -69,6 +69,40 @@ expect('foo').to.be.a('string')
 
 The alias `.an` can be used interchangeably with `.a`.
 
+## above(n)
+
+Asserts that the target is a number greater than the given number `n`.
+
+```lua
+expect(2).to.be.above(1)
+```
+
+Add `lengthOf` earlier in the chain to assert that the target’s length is greater than the given number `n`.
+
+```lua
+expect("foo").to.have.a.length.above(2)
+expect({1, 2, 3}).to.have.a.length.above(2)
+```
+
+The aliases `gt` and `greaterThan` can be used interchangeably with `above`.
+
+## below(n)
+
+Asserts that the target is a number less than the given number `n`.
+
+```lua
+expect(1).to.be.below(2)
+```
+
+Add `lengthOf` earlier in the chain to assert that the target’s length is less than the given number `n`.
+
+```lua
+expect("foo").to.have.a.length.below(4)
+expect({1, 2, 3}).to.have.a.length.below(4)
+```
+
+The aliases `lt` and `lessThan` can be used interchangeably with `below`.
+
 ## empty()
 
 When the target is a string, asserts that the target’s length is zero.
@@ -162,6 +196,39 @@ expect({x = {a = 1}}).to.Not.include({x = {a = 1}})
 
 The aliases `includes`, `contain`, `contains` can be used interchangeably with `include`.
 
+## least(n)
+
+Asserts that the target is a number greater than or equal to the given number `n`.
+
+```lua
+expect(2).to.be.at.least(1)
+```
+
+Add `lengthOf` earlier in the chain to assert that the target’s length is greater than or equal to the given
+number `n`.
+
+```lua
+expect("foo").to.have.a.lengthOf.at.least(2)
+expect({1, 2, 3}).to.have.a.lengthOf.at.least(2)
+```
+
+The aliases `gte` and `greaterThanOrEqual` can be used interchangeably with `least`.
+
+## lengthOf(n)
+
+Asserts that the target’s length (or size) is equal to the given number `n`.
+
+```lua
+expect({1, 2, 3}).to.have.lengthOf(3)
+expect('foo').to.have.lengthOf(3)
+expect({a = 1, b = 2, c = 3}).to.have.lengthOf(3);
+```
+
+`lengthOf` can also be used as a language chain, causing some numeric features to use target’s length as the
+target.
+
+The alias `length` can be used interchangeably with `lengthOf`.
+
 ## match(pattern)
 
 Asserts that the target matches the given pattern.
@@ -169,6 +236,24 @@ Asserts that the target matches the given pattern.
 ```lua
 expect('foo').to.match('^f.o$')
 ```
+
+## most(n)
+
+Asserts that the target is a number less than or equal to the given number `n`.
+
+```lua
+expect(1).to.be.at.most(2)
+```
+
+Add `lengthOf` earlier in the chain to assert that the target’s length is less than or equal to the given
+number `n`.
+
+```lua
+expect("foo").to.have.a.lengthOf.at.most(4)
+expect({1, 2, 3}).to.have.a.lengthOf.at.most(4)
+```
+
+The aliases `lte` and `lessThanOrEqual` can be used interchangeably with `most`.
 
 ## nil()
 
@@ -192,6 +277,25 @@ Asserts that the target is true.
 
 ```lua
 expect(true).to.be.True()
+```
+
+## within(low, high)
+
+Asserts that the target is a number greater than or equal to the given number `low` and less than or equal to
+the given number `high`.
+
+```lua
+expect(2).to.be.within(1, 3)
+expect(2).to.be.within(2, 3)
+expect(2).to.be.within(1, 2)
+```
+
+Add `lengthOf` earlier in the chain to assert that the target’s length is greater than or equal to the given
+number `low` and less than or equal to the given number `high`.
+
+```lua
+expect("foo").to.have.a.length.within(2, 4)
+expect({1, 2, 3}).to.have.a.length.within(2, 4)
 ```
 
 # Configuration

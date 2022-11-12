@@ -329,6 +329,258 @@ describe('expect', function()
     end)
   end)
 
+  describe('above', function()
+    describe('(positive)', function()
+      case('if target is above value', function()
+        expect(2).to.be.above(1)
+      end)
+
+      case('if target is equal to value', function()
+        expect(2).to.be.above(2)
+      end, 'expected (number) 2 to be above 2', true)
+
+      case('if target is below value', function()
+        expect(2).to.be.above(3)
+      end, 'expected (number) 2 to be above 3', true)
+    end)
+
+    describe('(negative)', function()
+      case('if target is above value', function()
+        expect(2).to.Not.be.above(1)
+      end, 'expected (number) 2 to be at most 1', true)
+
+      case('if target is equal to value', function()
+        expect(2).to.Not.be.above(2)
+      end)
+    end)
+
+    describe('(length)', function()
+      case('if target length is above value', function()
+        expect('foo').to.have.a.length.above(2)
+      end)
+
+      case('if target length is equal to value', function()
+        expect({1, 2, 3}).to.have.a.length.above(3)
+      end, 'expected %(table.* to have a length above 3 but got 3$')
+
+      case('if target length is above value with negative test', function()
+        expect('foo').to.Not.have.a.length.above(2)
+      end, 'expected (string) \'foo\' to not have a length above 2', true)
+    end)
+  end)
+
+  describe('least', function()
+    describe('(positive)', function()
+      case('if target is above value', function()
+        expect(2).to.be.at.least(1)
+      end)
+
+      case('if target is equal to value', function()
+        expect(2).to.be.at.least(2)
+      end)
+
+      case('if target is below value', function()
+        expect(2).to.be.at.least(3)
+      end, 'expected (number) 2 to be at least 3', true)
+    end)
+
+    describe('(negative)', function()
+      case('if target is above value', function()
+        expect(2).to.Not.be.at.least(1)
+      end, 'expected (number) 2 to be below 1', true)
+
+      case('if target is below value', function()
+        expect(1).to.Not.be.at.least(2)
+      end)
+    end)
+
+    describe('(length)', function()
+      case('if target length is above value', function()
+        expect('foo').to.have.a.lengthOf.at.least(2)
+      end)
+
+      case('if target length is below value', function()
+        expect({1, 2, 3}).to.have.a.lengthOf.at.least(4)
+      end, 'expected %(table.* to have a length of at least 4 but got 3$')
+
+      case('if target length is above value with negative test', function()
+        expect('foo').to.Not.have.a.lengthOf.at.least(2)
+      end, 'expected (string) \'foo\' to have a length below 2', true)
+    end)
+  end)
+
+  describe('below', function()
+    describe('(positive)', function()
+      case('if target is above value', function()
+        expect(2).to.be.below(1)
+      end, 'expected (number) 2 to be below 1', true)
+
+      case('if target is equal to value', function()
+        expect(2).to.be.below(2)
+      end, 'expected (number) 2 to be below 2', true)
+
+      case('if target is below value', function()
+        expect(2).to.be.below(3)
+      end)
+    end)
+
+    describe('(negative)', function()
+      case('if target is below value', function()
+        expect(2).to.Not.be.below(3)
+      end, 'expected (number) 2 to be at least 3', true)
+
+      case('if target is equal to value', function()
+        expect(2).to.Not.be.below(2)
+      end)
+    end)
+
+    describe('(length)', function()
+      case('if target length is below value', function()
+        expect('foo').to.have.a.length.below(4)
+      end)
+
+      case('if target length is equal to value', function()
+        expect({1, 2, 3}).to.have.a.length.below(3)
+      end, 'expected %(table.* to have a length below 3 but got 3$')
+
+      case('if target length is below value with negative test', function()
+        expect('foo').to.Not.have.a.length.below(4)
+      end, 'expected (string) \'foo\' to not have a length below 4', true)
+    end)
+  end)
+
+  describe('most', function()
+    describe('(positive)', function()
+      case('if target is above value', function()
+        expect(2).to.be.at.most(1)
+      end, 'expected (number) 2 to be at most 1', true)
+
+      case('if target is equal to value', function()
+        expect(2).to.be.at.most(2)
+      end)
+
+      case('if target is below value', function()
+        expect(2).to.be.at.most(3)
+      end)
+    end)
+
+    describe('(negative)', function()
+      case('if target is below value', function()
+        expect(2).to.Not.be.at.most(3)
+      end, 'expected (number) 2 to be above 3', true)
+
+      case('if target is above value', function()
+        expect(2).to.Not.be.at.most(1)
+      end)
+    end)
+
+    describe('(length)', function()
+      case('if target length is below value', function()
+        expect('foo').to.have.a.lengthOf.at.most(4)
+      end)
+
+      case('if target length is above value', function()
+        expect({1, 2, 3}).to.have.a.lengthOf.at.most(2)
+      end, 'expected %(table.* to have a length of at most 2 but got 3$')
+
+      case('if target length is below value with negative test', function()
+        expect('foo').to.Not.have.a.lengthOf.at.most(4)
+      end, 'expected (string) \'foo\' to have a length above 4', true)
+    end)
+  end)
+
+  describe('within', function()
+    describe('(positive)', function()
+      case('if target is within values', function()
+        expect(2).to.be.within(1, 3)
+      end)
+
+      case('if target is equal to low value', function()
+        expect(1).to.be.within(1, 3)
+      end)
+
+      case('if target is equal to high value', function()
+        expect(3).to.be.within(1, 3)
+      end)
+
+      case('if target is outside values', function()
+        expect(9).to.be.within(1, 3)
+      end, 'expected (number) 9 to be within 1..3', true)
+    end)
+
+    describe('(negative)', function()
+      case('if target is within values', function()
+        expect(2).to.Not.be.within(1, 3)
+      end, 'expected (number) 2 to not be within 1..3', true)
+
+      case('if target is outside values', function()
+        expect(9).to.Not.be.within(1, 3)
+      end)
+    end)
+
+    describe('(length)', function()
+      case('if target length is within values', function()
+        expect('foo').to.have.a.length.within(2, 4)
+      end)
+
+      case('if target length is outside values', function()
+        expect({1, 2, 3, 4}).to.have.a.length.within(1, 3)
+      end, 'expected %(table.* to have a length within 1..3$')
+
+      case('if target length is within values with negative test', function()
+        expect('foo').to.Not.have.a.length.within(2, 4)
+      end, 'expected (string) \'foo\' to not have a length within 2..4', true)
+    end)
+  end)
+
+  describe('lengthOf', function()
+    describe('(positive)', function()
+      case('if target string has expected length', function()
+        expect('foo').to.have.lengthOf(3)
+      end)
+
+      case('if target array has expected size', function()
+        expect({1, 2}).to.have.lengthOf(2)
+      end)
+
+      case('if target object has expected size', function()
+        expect({
+          a = 1,
+          b = 2,
+          c = 3,
+          d = 4
+        }).to.have.lengthOf(4)
+      end)
+
+      case('if target string does not have expected length', function()
+        expect('foo').to.have.lengthOf(2)
+      end, 'expected (string) \'foo\' to have a length of 2 but got 3', true)
+
+      case('if target array does not have expected size', function()
+        expect({1, 2}).to.have.lengthOf(3)
+      end, 'expected %(table.* to have a length of 3 but got 2$')
+
+      case('if target object has expected size', function()
+        expect({
+          a = 1,
+          b = 2,
+          c = 3,
+          d = 4
+        }).to.have.lengthOf(3)
+      end, 'expected %(table.* to have a length of 3 but got 4$')
+    end)
+
+    describe('(negative)', function()
+      case('if target string has expected length', function()
+        expect('foo').to.Not.have.lengthOf(3)
+      end, 'expected (string) \'foo\' to not have a length of 3', true)
+
+      case('if target array does not have expected size', function()
+        expect({1, 2}).to.Not.have.lengthOf(3)
+      end)
+    end)
+  end)
+
   describe('match', function()
     case('if target matches pattern', function()
       expect('foo').to.match('f.o$')

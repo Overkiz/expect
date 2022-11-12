@@ -131,6 +131,127 @@ return function(expect)
   expect.addMethod('equal', expectEqual)
   expect.addMethod('equals', expectEqual)
 
+  -- Check object is above value
+  local function expectAbove(controlData, expected)
+    local params = {
+      expected = expected
+    }
+    if controlData.doLength then
+      params.actual = controlData:getLength()
+      controlData:assert(params.actual > expected,
+        FailureMessage('expected {#} to have a length above {!expected} but got {!actual}', params),
+        FailureMessage('expected {#} to not have a length above {!expected}', params))
+    else
+      controlData:checkType('number', false)
+      controlData:assert(controlData.actual > expected, FailureMessage('expected {#} to be above {!expected}', params),
+        FailureMessage('expected {#} to be at most {!expected}', params))
+    end
+  end
+  expect.addMethod('above', expectAbove)
+  expect.addMethod('gt', expectAbove)
+  expect.addMethod('greaterThan', expectAbove)
+
+  -- Check object is at least value
+  local function expectLeast(controlData, expected)
+    local params = {
+      expected = expected
+    }
+    if controlData.doLength then
+      params.actual = controlData:getLength()
+      controlData:assert(params.actual >= expected, FailureMessage(
+        'expected {#} to have a length of at least {!expected} but got {!actual}', params),
+        FailureMessage('expected {#} to have a length below {!expected}', params))
+    else
+      controlData:checkType('number', false)
+      controlData:assert(controlData.actual >= expected,
+        FailureMessage('expected {#} to be at least {!expected}', params),
+        FailureMessage('expected {#} to be below {!expected}', params))
+    end
+  end
+  expect.addMethod('least', expectLeast)
+  expect.addMethod('gte', expectLeast)
+  expect.addMethod('greaterThanOrEqual', expectLeast)
+
+  -- Check object is below value
+  local function expectBelow(controlData, expected)
+    local params = {
+      expected = expected
+    }
+    if controlData.doLength then
+      params.actual = controlData:getLength()
+      controlData:assert(params.actual < expected,
+        FailureMessage('expected {#} to have a length below {!expected} but got {!actual}', params),
+        FailureMessage('expected {#} to not have a length below {!expected}', params))
+    else
+      controlData:checkType('number', false)
+      controlData:assert(controlData.actual < expected, FailureMessage('expected {#} to be below {!expected}', params),
+        FailureMessage('expected {#} to be at least {!expected}', params))
+    end
+  end
+  expect.addMethod('below', expectBelow)
+  expect.addMethod('lt', expectBelow)
+  expect.addMethod('lessThan', expectBelow)
+
+  -- Check object is at most value
+  local function expectMost(controlData, expected)
+    local params = {
+      expected = expected
+    }
+    if controlData.doLength then
+      params.actual = controlData:getLength()
+      controlData:assert(params.actual <= expected, FailureMessage(
+        'expected {#} to have a length of at most {!expected} but got {!actual}', params),
+        FailureMessage('expected {#} to have a length above {!expected}', params))
+    else
+      controlData:checkType('number', false)
+      controlData:assert(controlData.actual <= expected,
+        FailureMessage('expected {#} to be at most {!expected}', params),
+        FailureMessage('expected {#} to be above {!expected}', params))
+    end
+  end
+  expect.addMethod('most', expectMost)
+  expect.addMethod('lte', expectMost)
+  expect.addMethod('lessThanOrEqual', expectMost)
+
+  -- Check object is within values
+  expect.addMethod('within', function(controlData, low, high)
+    local params = {
+      low = low,
+      high = high
+    }
+    if controlData.doLength then
+      local length = controlData:getLength()
+      controlData:assert(length >= low and length <= high, FailureMessage(
+        'expected {#} to have a length within {!low}..{!high}', params),
+        FailureMessage('expected {#} to not have a length within {!low}..{!high}', params))
+    else
+      controlData:checkType('number', false)
+      controlData:assert(controlData.actual >= low and controlData.actual <= high,
+        FailureMessage('expected {#} to be within {!low}..{!high}', params),
+        FailureMessage('expected {#} to not be within {!low}..{!high}', params))
+    end
+  end)
+
+  -- Check object length
+  local function expectLengthChain(controlData)
+    controlData.previousDoLength = controlData.doLength
+    controlData.doLength = true
+  end
+  local function expectLength(controlData, expected)
+    controlData.doLength = controlData.previousDoLength
+
+    local length = controlData:getLength()
+    local params = {
+      expected = expected,
+      length = length
+    }
+    controlData:assert(length == expected,
+      FailureMessage('expected {#} to have a length of {!expected} but got {!length}', params),
+      FailureMessage('expected {#} to not have a length of {!expected}', params))
+  end
+  expect.addChainableMethod('length', expectLength, expectLengthChain);
+  expect.addChainableMethod('lengthOf', expectLength, expectLengthChain);
+
   -- Check object matches given pattern
   local function expectMatch(controlData, pattern)
     local params = {
