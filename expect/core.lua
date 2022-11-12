@@ -213,6 +213,25 @@ return function(expect)
   expect.addMethod('lte', expectMost)
   expect.addMethod('lessThanOrEqual', expectMost)
 
+  -- Check object is within values
+  expect.addMethod('within', function(controlData, low, high)
+    local params = {
+      low = low,
+      high = high
+    }
+    if controlData.doLength then
+      local length = controlData:getLength()
+      controlData:assert(length >= low and length <= high, FailureMessage(
+        'expected {#} to have a length within {!low}..{!high}', params),
+        FailureMessage('expected {#} to not have a length within {!low}..{!high}', params))
+    else
+      controlData:checkType('number', false)
+      controlData:assert(controlData.actual >= low and controlData.actual <= high,
+        FailureMessage('expected {#} to be within {!low}..{!high}', params),
+        FailureMessage('expected {#} to not be within {!low}..{!high}', params))
+    end
+  end)
+
   -- Check object length
   local function expectLengthChain(controlData)
     controlData.previousDoLength = controlData.doLength

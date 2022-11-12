@@ -279,6 +279,25 @@ Asserts that the target is true.
 expect(true).to.be.True()
 ```
 
+## within(low, high)
+
+Asserts that the target is a number greater than or equal to the given number `low` and less than or equal to
+the given number `high`.
+
+```lua
+expect(2).to.be.within(1, 3)
+expect(2).to.be.within(2, 3)
+expect(2).to.be.within(1, 2)
+```
+
+Add `lengthOf` earlier in the chain to assert that the target’s length is greater than or equal to the given
+number `low` and less than or equal to the given number `high`.
+
+```lua
+expect("foo").to.have.a.length.within(2, 4)
+expect({1, 2, 3}).to.have.a.length.within(2, 4)
+```
+
 # Configuration
 
 Even if the `expect` module can be used as-is, it may also be configured to fit your needs. This can be done
