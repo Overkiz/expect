@@ -45,6 +45,23 @@ function ControlData:checkIfCallable(checkNegation)
     checkNegation and FailureMessage('expected {#} not to be callable') or nil, 2)
 end
 
+--- Get the length of actual. Actual must be a string or a table.
+--- @return number
+function ControlData:getLength()
+  local actualType = type(self.actual)
+  if actualType == 'string' then
+    return self.actual:len()
+  elseif actualType == 'table' then
+    local count = 0
+    for _ in pairs(self.actual) do
+      count = count + 1
+    end
+    return count
+  else
+    self:fail(FailureMessage('expected {#} to be a string or a table'), 2)
+  end
+end
+
 --- Compare two items, either using strict equality, or deep comparision if deep is true.
 --- @param left any The first item to compare.
 --- @param right any The second item to compare.

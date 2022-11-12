@@ -131,6 +131,26 @@ return function(expect)
   expect.addMethod('equal', expectEqual)
   expect.addMethod('equals', expectEqual)
 
+  -- Check object length
+  local function expectLengthChain(controlData)
+    controlData.previousDoLength = controlData.doLength
+    controlData.doLength = true
+  end
+  local function expectLength(controlData, expected)
+    controlData.doLength = controlData.previousDoLength
+
+    local length = controlData:getLength()
+    local params = {
+      expected = expected,
+      length = length
+    }
+    controlData:assert(length == expected,
+      FailureMessage('expected {#} to have a length of {!expected} but got {!length}', params),
+      FailureMessage('expected {#} to not have a length of {!expected}', params))
+  end
+  expect.addChainableMethod('length', expectLength, expectLengthChain);
+  expect.addChainableMethod('lengthOf', expectLength, expectLengthChain);
+
   -- Check object matches given pattern
   local function expectMatch(controlData, pattern)
     local params = {

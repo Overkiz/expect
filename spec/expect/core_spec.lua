@@ -329,6 +329,54 @@ describe('expect', function()
     end)
   end)
 
+  describe('lengthOf', function()
+    describe('(positive)', function()
+      case('if target string has expected length', function()
+        expect('foo').to.have.lengthOf(3)
+      end)
+
+      case('if target array has expected size', function()
+        expect({1, 2}).to.have.lengthOf(2)
+      end)
+
+      case('if target object has expected size', function()
+        expect({
+          a = 1,
+          b = 2,
+          c = 3,
+          d = 4
+        }).to.have.lengthOf(4)
+      end)
+
+      case('if target string does not have expected length', function()
+        expect('foo').to.have.lengthOf(2)
+      end, 'expected (string) \'foo\' to have a length of 2 but got 3', true)
+
+      case('if target array does not have expected size', function()
+        expect({1, 2}).to.have.lengthOf(3)
+      end, 'expected %(table.* to have a length of 3 but got 2$')
+
+      case('if target object has expected size', function()
+        expect({
+          a = 1,
+          b = 2,
+          c = 3,
+          d = 4
+        }).to.have.lengthOf(3)
+      end, 'expected %(table.* to have a length of 3 but got 4$')
+    end)
+
+    describe('(negative)', function()
+      case('if target string has expected length', function()
+        expect('foo').to.Not.have.lengthOf(3)
+      end, 'expected (string) \'foo\' to not have a length of 3', true)
+
+      case('if target array does not have expected size', function()
+        expect({1, 2}).to.Not.have.lengthOf(3)
+      end)
+    end)
+  end)
+
   describe('match', function()
     case('if target matches pattern', function()
       expect('foo').to.match('f.o$')

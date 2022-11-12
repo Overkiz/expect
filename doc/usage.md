@@ -162,6 +162,21 @@ expect({x = {a = 1}}).to.Not.include({x = {a = 1}})
 
 The aliases `includes`, `contain`, `contains` can be used interchangeably with `include`.
 
+## lengthOf(n)
+
+Asserts that the target’s length (or size) is equal to the given number `n`.
+
+```lua
+expect({1, 2, 3}).to.have.lengthOf(3)
+expect('foo').to.have.lengthOf(3)
+expect({a = 1, b = 2, c = 3}).to.have.lengthOf(3);
+```
+
+`lengthOf` can also be used as a language chain, causing some numeric features to use target’s length as the
+target.
+
+The alias `length` can be used interchangeably with `lengthOf`.
+
 ## match(pattern)
 
 Asserts that the target matches the given pattern.
