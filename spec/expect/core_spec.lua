@@ -218,6 +218,41 @@ describe('expect', function()
     end, 'expected (nil) not to be nil', true)
   end)
 
+  describe('empty', function()
+    describe('(positive)', function()
+      case('if target is empty string', function()
+        expect('').to.be.empty()
+      end)
+
+      case('if target is empty object', function()
+        expect({}).to.be.empty()
+      end)
+
+      case('if target is non empty string', function()
+        expect('foo').to.be.empty()
+      end, 'expected (string) \'foo\' to be empty', true)
+
+      case('if target is non empty object', function()
+        expect({1}).to.be.empty()
+      end, 'expected %(table.* to be empty$')
+
+      case('if target is non treated object', function()
+        expect(function()
+        end).to.be.empty()
+      end, 'expected function.* to be a string or a table$')
+    end)
+
+    describe('(negative)', function()
+      case('if target is empty string', function()
+        expect('').Not.to.be.empty()
+      end, 'expected (string) \'\' not to be empty', true)
+
+      case('if target is non empty object', function()
+        expect({1}).Not.to.be.empty()
+      end)
+    end)
+  end)
+
   describe('equal', function()
     describe('(positive)', function()
       case('if objects are strictly the same', function()
