@@ -1,5 +1,6 @@
 local DiffTable = require('expect.DiffTable')
 local FailureMessage = require('expect.FailureMessage')
+local Utils = require('expect.Utils')
 
 return function(expect)
   -- Chainable words with no action
@@ -24,6 +25,51 @@ return function(expect)
   end
   expect.addChainableMethod('a', expectAn)
   expect.addChainableMethod('an', expectAn)
+
+  -- Check object contains given params
+  local function expectInclude(controlData, content)
+    local actualType = type(controlData.actual)
+    local included = false
+    local params = {
+      deeply = '',
+      expected = content
+    }
+
+    if actualType == 'string' then
+      included = controlData.actual:find(tostring(content), nil, true) ~= nil
+    elseif actualType == 'table' then
+      local compareItems
+      if controlData.deep then
+        params.deeply = 'deeply '
+      end
+      for _, item in pairs(controlData.actual) do
+        if controlData:areSame(item, content) then
+          included = true
+          break
+        end
+      end
+      if not included and not Utils.isArray(controlData.actual) and type(content) == 'table' and
+        not Utils.isArray(content) then
+        -- Also check table content element
+        included = true
+        for key, value in pairs(content) do
+          if not controlData:areSame(controlData.actual[key], value) then
+            included = false
+            break
+          end
+        end
+      end
+    else
+      controlData:fail(FailureMessage('expected {#} to be a string or a table'))
+    end
+
+    controlData:assert(included, FailureMessage('expected {#} to {!deeply}include {expected}', params),
+      FailureMessage('expected {#} to not {!deeply}include {expected}', params))
+  end
+  expect.addMethod('include', expectInclude)
+  expect.addMethod('includes', expectInclude)
+  expect.addMethod('contain', expectInclude)
+  expect.addMethod('contains', expectInclude)
 
   -- Check object is truthy
   expect.addMethod('ok', function(controlData)

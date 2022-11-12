@@ -1,3 +1,4 @@
+local DiffTable = require("expect.DiffTable")
 local FailureMessage = require('expect.FailureMessage')
 local Utils = require('expect.Utils')
 
@@ -42,6 +43,18 @@ function ControlData:checkIfCallable(checkNegation)
   self:assert(Utils.isCallable(self.actual),
     FailureMessage('expected {#} to be callable'),
     checkNegation and FailureMessage('expected {#} not to be callable') or nil, 2)
+end
+
+--- Compare two items, either using strict equality, or deep comparision if deep is true.
+--- @param left any The first item to compare.
+--- @param right any The second item to compare.
+--- @return boolean True if items are the same.
+function ControlData:areSame(left, right)
+  if self.deep then
+    return DiffTable.compare(left, right)
+  else
+    return left == right
+  end
 end
 
 --- Process an assertion on the control data.
