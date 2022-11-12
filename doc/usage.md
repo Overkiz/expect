@@ -69,6 +69,23 @@ expect('foo').to.be.a('string')
 
 The alias `.an` can be used interchangeably with `.a`.
 
+## above(n)
+
+Asserts that the target is a number greater than the given number `n`.
+
+```lua
+expect(2).to.be.above(1)
+```
+
+Add `lengthOf` earlier in the chain to assert that the target’s length is greater than the given number `n`.
+
+```lua
+expect("foo").to.have.a.length.above(2)
+expect({1, 2, 3}).to.have.a.length.above(2)
+```
+
+The aliases `gt` and `greaterThan` can be used interchangeably with `above`.
+
 ## empty()
 
 When the target is a string, asserts that the target’s length is zero.
