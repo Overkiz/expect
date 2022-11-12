@@ -237,6 +237,24 @@ Asserts that the target matches the given pattern.
 expect('foo').to.match('^f.o$')
 ```
 
+## most(n)
+
+Asserts that the target is a number less than or equal to the given number `n`.
+
+```lua
+expect(1).to.be.at.most(2)
+```
+
+Add `lengthOf` earlier in the chain to assert that the target’s length is less than or equal to the given
+number `n`.
+
+```lua
+expect("foo").to.have.a.lengthOf.at.most(4)
+expect({1, 2, 3}).to.have.a.lengthOf.at.most(4)
+```
+
+The aliases `lte` and `lessThanOrEqual` can be used interchangeably with `most`.
+
 ## nil()
 
 Asserts that the target is nil.

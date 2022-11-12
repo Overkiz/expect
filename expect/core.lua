@@ -192,6 +192,27 @@ return function(expect)
   expect.addMethod('lt', expectBelow)
   expect.addMethod('lessThan', expectBelow)
 
+  -- Check object is at most value
+  local function expectMost(controlData, expected)
+    local params = {
+      expected = expected
+    }
+    if controlData.doLength then
+      params.actual = controlData:getLength()
+      controlData:assert(params.actual <= expected, FailureMessage(
+        'expected {#} to have a length of at most {!expected} but got {!actual}', params),
+        FailureMessage('expected {#} to have a length above {!expected}', params))
+    else
+      controlData:checkType('number', false)
+      controlData:assert(controlData.actual <= expected,
+        FailureMessage('expected {#} to be at most {!expected}', params),
+        FailureMessage('expected {#} to be above {!expected}', params))
+    end
+  end
+  expect.addMethod('most', expectMost)
+  expect.addMethod('lte', expectMost)
+  expect.addMethod('lessThanOrEqual', expectMost)
+
   -- Check object length
   local function expectLengthChain(controlData)
     controlData.previousDoLength = controlData.doLength
