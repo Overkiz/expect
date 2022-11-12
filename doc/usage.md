@@ -179,6 +179,24 @@ expect({x = {a = 1}}).to.Not.include({x = {a = 1}})
 
 The aliases `includes`, `contain`, `contains` can be used interchangeably with `include`.
 
+## least(n)
+
+Asserts that the target is a number greater than or equal to the given number `n`.
+
+```lua
+expect(2).to.be.at.least(1)
+```
+
+Add `lengthOf` earlier in the chain to assert that the target’s length is greater than or equal to the given
+number `n`.
+
+```lua
+expect("foo").to.have.a.lengthOf.at.least(2)
+expect({1, 2, 3}).to.have.a.lengthOf.at.least(2)
+```
+
+The aliases `gte` and `greaterThanOrEqual` can be used interchangeably with `least`.
+
 ## lengthOf(n)
 
 Asserts that the target’s length (or size) is equal to the given number `n`.
