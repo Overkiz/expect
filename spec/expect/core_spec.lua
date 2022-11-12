@@ -42,6 +42,126 @@ describe('expect', function()
     end)
   end)
 
+  describe('include', function()
+    describe('(positive)', function()
+      case('if string contains expected', function()
+        expect('hello').to.include('ll')
+      end)
+
+      case('if string does not contains expected', function()
+        expect('hello').to.include('hi')
+      end, 'expected %(string%) \'hello\' to include %(string%) \'hi\'$')
+
+      case('if array contains expected', function()
+        expect({'one', 'two'}).to.include('one')
+      end)
+
+      case('if array does not contains expected', function()
+        expect({'one', 'two'}).to.include('three')
+      end, 'expected %(table.* to include %(string%) \'three\'$')
+
+      case('if array contains expected table', function()
+        expect({{
+          a = 'one'
+        }, {
+          a = 'two'
+        }}).to.include({
+          a = 'one'
+        })
+      end, 'expected %(table.* to include %(table')
+
+      case('if array deeply contains expected table', function()
+        expect({{
+          a = 'one'
+        }, {
+          a = 'two'
+        }}).to.deep.include({
+          a = 'one'
+        })
+      end)
+
+      case('if table contains expected', function()
+        expect({
+          a = 'one',
+          b = 'two'
+        }).to.include('one')
+      end)
+
+      case('if table does not contains expected', function()
+        expect({
+          a = 'one',
+          b = 'two'
+        }).to.include('three')
+      end, 'expected %(table.* to include %(string%) \'three\'$')
+
+      case('if table contains expected table items', function()
+        expect({
+          a = 'one',
+          b = 'two',
+          c = 'three'
+        }).to.include({
+          a = 'one',
+          c = 'three'
+        })
+      end)
+
+      case('if table does not contains expected table items', function()
+        expect({
+          a = {'one'},
+          b = 'two',
+          c = 'three'
+        }).to.include({
+          a = {'one'}
+        })
+      end, 'expected %(table.* to include %(table')
+
+      case('if table deep contains expected table items', function()
+        expect({
+          a = {'one'},
+          b = 'two',
+          c = 'three'
+        }).to.deep.include({
+          a = {'one'}
+        })
+      end)
+    end)
+
+    describe('(negative)', function()
+      case('if string contains expected', function()
+        expect('hello').to.Not.include('ll')
+      end, 'expected %(string%) \'hello\' to not include %(string%) \'ll\'$')
+
+      case('if string does not contains expected', function()
+        expect('hello').to.Not.include('hi')
+      end)
+
+      case('if array does not contains expected', function()
+        expect({'one', 'two'}).to.Not.include('three')
+      end)
+
+      case('if array deeply contains expected table', function()
+        expect({{
+          a = 'one'
+        }, {
+          a = 'two'
+        }}).to.Not.deep.include({
+          a = 'one'
+        })
+      end, 'expected %(table.* to not deeply include %(table')
+
+      case('if table contains expected table items', function()
+        expect({
+          a = 'one',
+          b = 'two',
+          c = 'three'
+        }).to.Not.include({
+          a = 'one',
+          c = 'three'
+        })
+      end, 'expected %(table.* to not include %(table')
+    end)
+  end)
+
   describe('ok', function()
     case('if target is truthy', function()
       expect('foo').to.be.ok()

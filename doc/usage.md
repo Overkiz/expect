@@ -111,6 +111,43 @@ Asserts that the target is false.
 expect(false).to.be.False()
 ```
 
+## include(val)
+
+When the target is a string, asserts that the string representation of `val` is a substring of the target.
+
+```lua
+expect('foobar').to.include('foo')
+```
+
+When the target is an object (including an array), asserts that the given `val` is a member of the target.
+
+```lua
+expect({1, 2, 3}).to.include(2)
+expect({a = 1, b = 2}).to.include(2)
+```
+
+When both the target and the given `val` are objects, but not arrays, and the given `val` is not a member of
+the target, asserts that the given `val`’s properties are a subset of the target’s properties.
+
+```lua
+expect({a = 1, b = 2, c = 3}).to.include({a = 1, b = 2})
+```
+
+Note that sparsed arrays are considered arrays unless the count of holes is greater than the count of
+elements.
+
+By default, strict equality is used to compare array members and object properties. Add `.deep` earlier in
+the chain to use deep equality instead.
+
+```lua
+expect({{a = 1}}).to.deep.include({a = 1})
+expect({{a = 1}}).to.Not.include({a = 1})
+expect({x = {a = 1}}).to.deep.include({x = {a = 1}})
+expect({x = {a = 1}}).to.Not.include({x = {a = 1}})
+```
+
+The aliases `includes`, `contain`, `contains` can be used interchangeably with `include`.
+
 ## match(pattern)
 
 Asserts that the target matches the given pattern.
