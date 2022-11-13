@@ -221,8 +221,8 @@ return function(expect)
     }
     if controlData.doLength then
       local length = controlData:getLength()
-      controlData:assert(length >= low and length <= high, FailureMessage(
-        'expected {#} to have a length within {!low}..{!high}', params),
+      controlData:assert(length >= low and length <= high,
+        FailureMessage('expected {#} to have a length within {!low}..{!high}', params),
         FailureMessage('expected {#} to not have a length within {!low}..{!high}', params))
     else
       controlData:checkType('number', false)
@@ -230,6 +230,34 @@ return function(expect)
         FailureMessage('expected {#} to be within {!low}..{!high}', params),
         FailureMessage('expected {#} to not be within {!low}..{!high}', params))
     end
+  end)
+
+  -- Check object property
+  expect.addMethod('property', function(controlData, name, value)
+    controlData:checkType('table', false)
+
+    local params = {
+      name = name
+    }
+    local propertyValue = controlData.actual[name]
+
+    if not controlData.negate or value == nil then
+      controlData:assert(propertyValue ~= nil,
+        FailureMessage('expected {#} to have property {!name}', params),
+        FailureMessage('expected {#} to not have property {!name}', params))
+    end
+
+    if value ~= nil then
+      local same, expected, actual = controlData:areSame(value, propertyValue)
+      params.deep = controlData.deep and 'deep ' or ''
+      params.expected = expected
+      params.actual = actual
+      controlData:assert(same, FailureMessage(
+        'expected {#} to have {!deep}property {!name} of {expected} but got {actual}', params),
+        FailureMessage('expected {#} to not have {!deep}property {!name} of {actual}', params))
+    end
+
+    controlData.actual = propertyValue
   end)
 
   -- Check object length

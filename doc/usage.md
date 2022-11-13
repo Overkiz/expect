@@ -271,6 +271,34 @@ Asserts that the target is truthy (i.e. neither `nil` nor `false`).
 expect("foo").to.be.ok()
 ```
 
+## property(name[, value])
+
+Asserts that the target has a property with the given key `name`.
+
+```lua
+expect({a = 1}).to.have.property('a')
+```
+
+When `value` is provided, `property` also asserts that the property’s value is equal to the given `value`.
+
+```lua
+expect({a = 1}).to.have.property('a', 1)
+```
+
+By default, strict equality is used. Add `deep` earlier in the chain to use deep equality instead.
+
+```lua
+expect({x = {a = 1}}).to.have.deep.property('x', {a = 1})
+expect({x = {a = 1}}).to.Not.have.property('x', {a = 1})
+```
+
+`property` changes the target of any assertions that follow in the chain to be the value of the property from
+the original target object.
+
+```lua
+expect({a = 1}).to.have.property('a').that.is.a('number')
+```
+
 ## true()
 
 Asserts that the target is true.
