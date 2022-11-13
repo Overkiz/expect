@@ -437,4 +437,19 @@ return function(expect)
   end
   expect.addMethod('satisfy', expectSatisfy)
   expect.addMethod('satisfies', expectSatisfy)
+
+  -- Check target is close to expected
+  local function expectCloseTo(controlData, expected, delta)
+    controlData:checkType('number', false)
+    local params = {
+      expected = expected,
+      delta = delta
+    }
+
+    controlData:assert(math.abs(controlData.actual - expected) <= delta,
+      FailureMessage('expected {#} to be close to {!expected} +/- {!delta}', params),
+      FailureMessage('expected {#} not to be close to {!expected} +/- {!delta}', params))
+  end
+  expect.addMethod('closeTo', expectCloseTo)
+  expect.addMethod('approximately', expectCloseTo)
 end

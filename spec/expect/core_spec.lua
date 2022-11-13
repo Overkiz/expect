@@ -944,4 +944,26 @@ describe('expect', function()
       expect(1).to.Not.satisfy(matcher)
     end, 'expect (number) 1 to not satisfy function', true)
   end)
+
+  describe('closeTo', function()
+    case('if target is equal to expected', function()
+      expect(1.5).to.be.closeTo(1.5, 0.5)
+    end)
+
+    case('if target is above but close to expected', function()
+      expect(1.5).to.be.closeTo(1, 0.5)
+    end)
+
+    case('if target is below but close to expected', function()
+      expect(1.5).to.be.closeTo(2, 0.5)
+    end)
+
+    case('if target is too different from expected', function()
+      expect(1.5).to.be.closeTo(3, 0.5)
+    end, 'expected (number) 1.5 to be close to 3 +/- 0.5', true)
+
+    case('if target is equal to expected with negative test', function()
+      expect(1.5).Not.to.be.closeTo(1.2, 0.5)
+    end, 'expected (number) 1.5 not to be close to 1.2 +/- 0.5', true)
+  end)
 end)

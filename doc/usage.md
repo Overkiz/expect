@@ -133,6 +133,16 @@ expect({1, 2, 3}).to.have.a.length.below(4)
 
 The aliases `lt` and `lessThan` can be used interchangeably with `below`.
 
+## closeTo(expected, delta)
+
+Asserts that the target is a number that is within a given `delta` range of the given number `expected`.
+
+```lua
+expect(1.5).to.be.closeTo(1, 0.5)
+```
+
+The alias `approximately` can be used interchangeably with `closeTo`.
+
 ## empty()
 
 When the target is a string, asserts that the target’s length is zero.
