@@ -48,14 +48,44 @@ Negates all assertions that follow in the chain.
 
 ```lua
 expect(function() end).to.Not.fail()
+expect({a = 1}).to.Not.have.property('b')
+expect({1, 2}).to.be.a('table').that.does.Not.include(3)
+```
+
+## all
+
+Causes some assertions that follow in the chain to require that the target matches the full expression. This
+is the opposite of `any`.
+
+```lua
+expect({a = 1, b = 2}).to.have.all.keys('a', 'b')
+```
+
+## any
+
+Causes some assertions that follow in the chain to only require that the target matches only a part of the
+expression. This is the opposite of `all`.
+
+```lua
+expect({a = 1, b = 2}).to.Not.have.any.keys('c', 'd')
 ```
 
 ## deep
 
-Used to do deep comparison instead of strict ones.
+Causes some assertions that follow in the chain to use deep equality instead of strict equality.
 
 ```lua
 expect({a = 1}).to.deep.equal({a = 1})
+expect({a = 1}).to.Not.equal({a = 1})
+
+expect({{a = 1}}).to.deep.include({a = 1})
+expect({{a = 1}}).to.Not.include({a = 1})
+
+expect({{a = 1} = true}).to.have.deep.key({a = 1})
+expect({{a = 1} = true}).to.Not.have.key({a = 1})
+
+expect({x = {a = 1}}).to.have.deep.property('x', {a = 1})
+expect({x = {a = 1}}).to.Not.have.property('x', {a = 1})
 ```
 
 ## a(type)
@@ -194,7 +224,56 @@ expect({x = {a = 1}}).to.deep.include({x = {a = 1}})
 expect({x = {a = 1}}).to.Not.include({x = {a = 1}})
 ```
 
+`include` can also be used as a language chain, causing some assertions that follow in the chain to require
+the target to be a superset of the expected set.
+
+```lua
+expect({a = 1, b = 2, c = 3}).to.include.all.keys('a', 'b')
+expect({a = 1, b = 2, c = 3}).to.Not.have.all.keys('a', 'b')
+```
+
 The aliases `includes`, `contain`, `contains` can be used interchangeably with `include`.
+
+## keys(key1[, key2[, ...]])
+
+Asserts that the target table has the given keys.
+
+```lua
+expect({a = 1, b = 2}).to.have.all.keys('a', 'b')
+expect({'a', 'b'}).to.have.all.keys(1, 2)
+```
+
+By default, strict equality is used to compare keys. Add `deep` earlier in the chain to use deep equality
+instead.
+
+```lua
+expect([{a = 1}] = true).to.have.all.deep.keys({a = 1})
+expect([{a = 1}] = true).to.Not.have.all.keys({a = 1})
+```
+
+By default, the target must have all of the given keys and no more. Add `any` earlier in the chain to only
+require that the target have at least one of the given keys.
+
+Note that `all` is used by default when neither `all` nor `any` appear earlier in the chain.
+
+Add `include` earlier in the chain to require that the target’s keys be a superset of the expected keys,
+rather than identical sets.
+
+```lua
+expect({a = 1, b = 2, c = 3}).to.include.all.keys('a', 'b')
+expect({a = 1, b = 2, c = 3}).to.Not.have.all.keys('a', 'b')
+```
+
+However, if `any` and `include` are combined, only the `any` takes effect. The `include` is ignored in this
+case.
+
+```lua
+-- Both assertions are identical
+expect({a = 1}).to.have.any.keys('a', 'b')
+expect({a = 1}).to.include.any.keys('a', 'b')
+```
+
+The alias `key` can be used interchangeably with `keys`.
 
 ## least(n)
 
