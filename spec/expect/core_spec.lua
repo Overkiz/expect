@@ -533,6 +533,102 @@ describe('expect', function()
     end)
   end)
 
+  describe('property', function()
+    describe('(positive)', function()
+      case('if target has property', function()
+        expect({
+          a = 1
+        }).to.have.property('a')
+      end)
+
+      case('if target has property with matching value', function()
+        expect({
+          a = 1
+        }).to.have.property('a', 1)
+      end)
+
+      case('if target has property with matching value tested after', function()
+        expect({
+          a = 1
+        }).to.have.property('a').that.equals(1)
+      end)
+
+      case('if target does not have property', function()
+        expect({
+          a = 1
+        }).to.have.property('b')
+      end, 'expected %(table.* to have property b')
+
+      case('if target has property with non matching value', function()
+        expect({
+          a = 1
+        }).to.have.property('a', 2)
+      end, 'expected %(table.* to have property a of %(number%) 2 but got %(number%) 1')
+
+      case('if target has property with non matching value tested after', function()
+        expect({
+          a = 1
+        }).to.have.property('a').that.equals(2)
+      end, 'expected (number) 1 to equal (number) 2', true)
+
+      case('if target has property with same value', function()
+        expect({
+          a = {
+            x = 1
+          }
+        }).to.have.property('a', {
+          x = 1
+        })
+      end, 'expected %(table.* to have property a of %(table.* but got %(table')
+
+      case('if target has property with same value and deep comparison', function()
+        expect({
+          a = {
+            x = 1
+          }
+        }).to.have.deep.property('a', {
+          x = 1
+        })
+      end)
+    end)
+
+    describe('(negative)', function()
+      case('if target has property', function()
+        expect({
+          a = 1
+        }).to.Not.have.property('a')
+      end, 'expected %(table.* to not have property a')
+
+      case('if target has property with matching value', function()
+        expect({
+          a = 1
+        }).to.Not.have.property('a', 1)
+      end, 'expected %(table.* to not have property a of %(number%) 1')
+
+      case('if target does not have property', function()
+        expect({
+          a = 1
+        }).to.Not.have.property('b')
+      end)
+
+      case('if target has property with non matching value', function()
+        expect({
+          a = 1
+        }).to.Not.have.property('a', 2)
+      end)
+
+      case('if target has property with same value', function()
+        expect({
+          a = {
+            x = 1
+          }
+        }).to.Not.have.deep.property('a', {
+          x = 1
+        })
+      end, 'expected %(table.* to not have deep property a of %(table')
+    end)
+  end)
+
   describe('lengthOf', function()
     describe('(positive)', function()
       case('if target string has expected length', function()
