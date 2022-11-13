@@ -926,4 +926,22 @@ describe('expect', function()
       end, 'expected function.* not to fail with error %(string%) \'is failing\'')
     end)
   end)
+
+  describe('satisfy', function()
+    local matcher = function(value)
+      return value == 1
+    end
+
+    case('if target satisfies matcher', function()
+      expect(1).to.satisfy(matcher)
+    end)
+
+    case('if target does not satisfy matcher', function()
+      expect(2).to.satisfy(matcher)
+    end, 'expect (number) 2 to satisfy function', true)
+
+    case('if target satisfies matcher with negative test', function()
+      expect(1).to.Not.satisfy(matcher)
+    end, 'expect (number) 1 to not satisfy function', true)
+  end)
 end)

@@ -378,6 +378,17 @@ the original target object.
 expect({a = 1}).to.have.property('a').that.is.a('number')
 ```
 
+## satisfy(matcher)
+
+Invokes the given `matcher` function with the target being passed as the first argument, and asserts that the
+value returned is truthy.
+
+```lua
+expect(1).to.satisfy(function(num) return num > 0 end)
+```
+
+The alias `satisfies` can be used interchangeably with `satisfy`.
+
 ## true()
 
 Asserts that the target is true.

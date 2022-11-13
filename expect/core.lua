@@ -426,4 +426,15 @@ return function(expect)
   expect.addMethod('error', expectFail)
   expect.addMethod('failWith', expectFail)
   expect.addMethod('failsWith', expectFail)
+
+  -- Check target satisfies a function
+  local function expectSatisfy(controlData, matcher)
+    local params = {
+      matcher = matcher
+    }
+    controlData:assert(matcher(controlData.actual), FailureMessage('expect {#} to satisfy {matcher}', params),
+      FailureMessage('expect {#} to not satisfy {matcher}', params))
+  end
+  expect.addMethod('satisfy', expectSatisfy)
+  expect.addMethod('satisfies', expectSatisfy)
 end
