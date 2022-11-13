@@ -19,6 +19,16 @@ return function(expect)
     controlData.deep = true
   end)
 
+  -- Set any flag
+  expect.addProperty('any', function(controlData)
+    controlData.any = true
+  end)
+
+  -- Set all flag
+  expect.addProperty('all', function(controlData)
+    controlData.any = false
+  end)
+
   -- Check object is of given type
   local function expectAn(controlData, expected)
     controlData:checkType(expected, true)
@@ -27,7 +37,13 @@ return function(expect)
   expect.addChainableMethod('an', expectAn)
 
   -- Check object contains given params
+  local function expectIncludeChain(controlData)
+    controlData.previousContains = controlData.contains
+    controlData.contains = true
+  end
   local function expectInclude(controlData, content)
+    controlData.contains = controlData.previousContains
+
     local actualType = type(controlData.actual)
     local included = false
     local params = {
@@ -66,10 +82,10 @@ return function(expect)
     controlData:assert(included, FailureMessage('expected {#} to {!deeply}include {expected}', params),
       FailureMessage('expected {#} to not {!deeply}include {expected}', params))
   end
-  expect.addMethod('include', expectInclude)
-  expect.addMethod('includes', expectInclude)
-  expect.addMethod('contain', expectInclude)
-  expect.addMethod('contains', expectInclude)
+  expect.addChainableMethod('include', expectInclude, expectIncludeChain)
+  expect.addChainableMethod('includes', expectInclude, expectIncludeChain)
+  expect.addChainableMethod('contain', expectInclude, expectIncludeChain)
+  expect.addChainableMethod('contains', expectInclude, expectIncludeChain)
 
   -- Check object is truthy
   expect.addMethod('ok', function(controlData)
@@ -242,8 +258,7 @@ return function(expect)
     local propertyValue = controlData.actual[name]
 
     if not controlData.negate or value == nil then
-      controlData:assert(propertyValue ~= nil,
-        FailureMessage('expected {#} to have property {!name}', params),
+      controlData:assert(propertyValue ~= nil, FailureMessage('expected {#} to have property {!name}', params),
         FailureMessage('expected {#} to not have property {!name}', params))
     end
 
@@ -291,6 +306,83 @@ return function(expect)
   end
   expect.addMethod('match', expectMatch)
   expect.addMethod('matches', expectMatch)
+
+  -- Check object has keys
+  local function expectKeys(controlData, ...)
+    controlData:checkType('table', false)
+
+    local expected = {...}
+    local ok = false
+
+    if controlData.any then
+      for _, expectedItem in pairs(expected) do
+        for key in pairs(controlData.actual) do
+          if controlData:areSame(expectedItem, key) then
+            ok = true
+            break
+          end
+        end
+        if ok then
+          break
+        end
+      end
+    else
+      -- All
+      ok = true
+      for _, expectedItem in pairs(expected) do
+        ok = false
+        for key in pairs(controlData.actual) do
+          if controlData:areSame(expectedItem, key) then
+            ok = true
+            break
+          end
+        end
+        if not ok then
+          break
+        end
+      end
+
+      -- Not contains = same key count
+      if ok and not controlData.contains then
+        local count = 0
+        for _ in pairs(controlData.actual) do
+          count = count + 1
+        end
+        ok = count == #expected
+      end
+    end
+
+    -- Prepare to display keys
+    setmetatable(expected, {
+      __tostring = function()
+        local result = 'key'
+        if #expected > 1 then
+          result = result .. 's '
+          for i = 1, #expected do
+            if i == #expected then
+              result = result .. (controlData.any and ' or ' or ' and ')
+            elseif i > 1 then
+              result = result .. ', '
+            end
+            result = result .. tostring(expected[i])
+          end
+        else
+          result = result .. ' ' .. tostring(expected[1])
+        end
+        return result
+      end
+    })
+
+    local params = {
+      keys = expected,
+      deeply = controlData.deep and 'deeply ' or '',
+      possess = controlData.contains and 'contain' or 'have'
+    }
+    controlData:assert(ok, FailureMessage('expected {#} to {!deeply}{!possess} {!keys}', params),
+      FailureMessage('expected {#} to not {!deeply}{!possess} {!keys}', params))
+  end
+  expect.addMethod('keys', expectKeys)
+  expect.addMethod('key', expectKeys)
 
   -- Check function throws an exception
   local function expectFail(controlData, expectedErr, plain)

@@ -691,6 +691,118 @@ describe('expect', function()
     end, 'expected (string) \'foo\' to not match f.o$', true)
   end)
 
+  describe('keys', function()
+    describe('(positive)', function()
+      case('if target table has all keys', function()
+        expect({
+          a = 1,
+          b = 2
+        }).to.have.all.keys('a', 'b')
+      end)
+
+      case('if target array has all keys', function()
+        expect({'a', 'b'}).to.have.keys(1, 2)
+      end)
+
+      case('if target has any key', function()
+        expect({
+          a = 1,
+          b = 2
+        }).to.have.any.keys('c', 'b')
+      end)
+
+      case('if target contain all keys', function()
+        expect({
+          a = 1,
+          b = 2,
+          c = 3
+        }).to.include.all.keys('a', 'b')
+      end)
+
+      case('if target has more keys', function()
+        expect({'a', 'b'}).to.have.all.keys(1)
+      end, 'expected %(table.* to have key 1$')
+
+      case('if target does not have all keys', function()
+        expect({'a', 'b'}).to.have.all.keys(1, 2, 3)
+      end, 'expected %(table.* to have keys 1, 2 and 3$')
+
+      case('if target does not have any key', function()
+        expect({'a', 'b'}).to.have.any.keys(3, 4)
+      end, 'expected %(table.* to have keys 3 or 4$')
+
+      case('if target does not contain all keys', function()
+        expect({
+          a = 1,
+          b = 2,
+          c = 3
+        }).to.include.all.keys('a', 'b', 'c', 'd')
+      end, 'expected %(table.* to contain keys a, b, c and d$')
+
+      case('if target table has all table keys', function()
+        expect({
+          [{
+            a = 1
+          }] = true,
+          [{
+            b = 2
+          }] = true
+        }).to.have.all.keys({
+          a = 1
+        }, {
+          b = 2
+        })
+      end, 'expected %(table.* to have keys')
+
+      case('if target table has all table deep keys', function()
+        expect({
+          [{
+            a = 1
+          }] = true,
+          [{
+            b = 2
+          }] = true
+        }).to.have.all.deep.keys({
+          a = 1
+        }, {
+          b = 2
+        })
+      end)
+    end)
+
+    describe('(negative)', function()
+      case('if target has all keys', function()
+        expect({
+          a = 1,
+          b = 2
+        }).to.Not.have.all.keys('a', 'b')
+      end, 'expected %(table.* to not have keys a and b$')
+
+      case('if target has any key', function()
+        expect({
+          a = 1,
+          b = 2
+        }).to.Not.have.any.keys('c', 'b')
+      end, 'expected %(table.* to not have keys c or b$')
+
+      case('if target contain all keys', function()
+        expect({
+          a = 1,
+          b = 2,
+          c = 3
+        }).to.Not.include.all.keys('a', 'b')
+      end, 'expected %(table.* to not contain keys a and b$')
+
+      case('if target has more keys', function()
+        expect({'a', 'b'}).to.Not.have.all.keys(1)
+      end)
+
+      case('if target does not have any key', function()
+        expect({'a', 'b'}).to.Not.have.any.keys(3, 4)
+      end)
+    end)
+  end)
+
   describe('fail', function()
     -- Override default, because this function cannot be tested by itself
     local function case(name, testedFunction, failure)
