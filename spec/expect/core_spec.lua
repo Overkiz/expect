@@ -966,4 +966,82 @@ describe('expect', function()
       expect(1.5).Not.to.be.closeTo(1.2, 0.5)
     end, 'expected (number) 1.5 not to be close to 1.2 +/- 0.5', true)
   end)
+
+  describe('members', function()
+    describe('(positive)', function()
+      case('if target has same unordered members', function()
+        expect({1, 2, 3}).to.have.members(2, 1, 3)
+      end)
+
+      case('if target has same duplicated members', function()
+        expect({1, 2, 2}).to.have.members(2, 1, 2)
+      end)
+
+      case('if target has same table members', function()
+        expect({{
+          a = 1
+        }}).to.have.members({
+          a = 1
+        })
+      end, 'expected %(table.* to have the same members as table.*')
+
+      case('if target has same table members with deep comparison', function()
+        expect({{
+          a = 1
+        }}).to.have.deep.members({
+          a = 1
+        })
+      end)
+
+      case('if target does not have same members', function()
+        expect({1, 2, 3}).to.have.members(2, 4, 3)
+      end, 'expected %(table.* to have the same members as 2, 4, 3$')
+
+      case('if target has less members', function()
+        expect({1, 2, 3}).to.have.members(2, 1, 3, 4)
+      end, 'expected %(table.* to have the same members as 2, 1, 3, 4$')
+
+      case('if target has more members', function()
+        expect({1, 2, 3}).to.have.members(2, 1)
+      end, 'expected %(table.* to have the same members as 2, 1$')
+
+      case('if target has same unordered members with ordered comparison', function()
+        expect({1, 2, 3}).to.have.ordered.members(2, 1, 3)
+      end, 'expected %(table.* to have the same ordered members as 2, 1, 3')
+
+      case('if target has same ordered members', function()
+        expect({1, 2, 3}).to.have.ordered.members(1, 2, 3)
+      end)
+
+      case('if target has more members with include', function()
+        expect({1, 2, 3}).to.include.members(2, 1)
+      end)
+
+      case('if target has more ordered members with include', function()
+        expect({1, 2, 3}).to.include.ordered.members(2, 3)
+      end)
+    end)
+
+    describe('(negative)', function()
+      case('if target has same unordered members', function()
+        expect({1, 2, 3}).to.Not.have.members(2, 1, 3)
+      end, 'expected %(table.* to not have the same members as 2, 1, 3$')
+
+      case('if target does not have same members', function()
+        expect({1, 2, 3}).to.Not.have.members(2, 4, 3)
+      end)
+
+      case('if target has same unordered members with ordered comparison', function()
+        expect({1, 2, 3}).to.Not.have.ordered.members(2, 1, 3)
+      end)
+
+      case('if target has same ordered members', function()
+        expect({1, 2, 3}).to.Not.have.ordered.members(1, 2, 3)
+      end, 'expected %(table.* to not have the same ordered members as 1, 2, 3$')
+
+      case('if target has more members with include', function()
+        expect({1, 2, 3}).to.Not.include.members(2, 1)
+      end, 'expected %(table.* to not be an ordered superset of 2, 1$')
+    end)
+  end)
 end)
