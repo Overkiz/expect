@@ -88,6 +88,14 @@ expect({x = {a = 1}}).to.have.deep.property('x', {a = 1})
 expect({x = {a = 1}}).to.Not.have.property('x', {a = 1})
 ```
 
+## ordered
+
+Causes some assertions that follow in the chain to respect expected order.
+
+```lua
+expect({1, 2, 3}).to.have.ordered.members(1, 2).but.Not.to.have.ordered.members(2, 1)
+```
+
 ## a(type)
 
 Asserts that the target’s type is equal to the given string type. Types are case insensitive.
@@ -324,6 +332,45 @@ Asserts that the target matches the given pattern.
 
 ```lua
 expect('foo').to.match('^f.o$')
+```
+
+## members(member1[, member2[, ...]])
+
+Asserts that the target array has the same members as the given members.
+
+```lua
+expect({1, 2, 3}).to.have.members(2, 1, 3)
+expect({1, 2, 2}).to.have.members(2, 1, 2)
+```
+
+By default, members are compared using strict equality. Add `deep` earlier in the chain to use deep equality
+instead.
+
+```lua
+expect({{a = 1}}).to.have.deep.members({a = 1})
+expect({{a = 1}}).to.Not.have.members({a = 1})
+```
+
+By default, order doesn’t matter. Add `ordered` earlier in the chain to require that members appear in the
+same order.
+
+```lua
+expect({1, 2, 3}).to.have.ordered.members(1, 2, 3)
+expect({1, 2, 3}).to.have.ordered.members(2, 1, 3).but.Not.ordered.members(2, 1, 3)
+```
+
+By default, both target and given members must be the same size. Add `include` earlier in the chain to
+require that the target’s members be a superset of the expected members.
+
+```lua
+expect({1, 2, 3}).to.include.members(1, 2)
+expect({1, 2, 3}).to.include.members(2, 3)
+```
+
+`deep`, `ordered` and `include` can all be combined.
+
+```lua
+expect({{a = 1}, {b = 2}, {c = 3}}).to.include.deep.ordered.members({b = 2}, {c = 3})
 ```
 
 ## most(n)

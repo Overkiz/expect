@@ -18,7 +18,7 @@ function Utils.isArray(item)
   local max = 0
   local count = 0
   for k, v in pairs(item) do
-    if type(k) == 'number' then
+    if type(k) == 'number' and k > 0 and math.floor(k) == k then
       if k > max then
         max = k
       end

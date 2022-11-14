@@ -19,6 +19,11 @@ return function(expect)
     controlData.deep = true
   end)
 
+  -- Set ordered flag
+  expect.addProperty('ordered', function(controlData)
+    controlData.ordered = true
+  end)
+
   -- Set any flag
   expect.addProperty('any', function(controlData)
     controlData.any = true
@@ -452,4 +457,62 @@ return function(expect)
   end
   expect.addMethod('closeTo', expectCloseTo)
   expect.addMethod('approximately', expectCloseTo)
+
+  -- Check object has members
+  expect.addMethod('members', function(controlData, ...)
+    local maxIndex = Utils.isArray(controlData.actual)
+    controlData:assert(maxIndex, FailureMessage('expected {#} to be an array'))
+
+    local expected = {...}
+    local ok = true
+
+    for i = 1, maxIndex do
+      if controlData.actual[i] then
+        if #expected < 1 then
+          ok = controlData.contains
+          break
+        end
+        local found = false
+        for e = 1, #expected do
+          if controlData.ordered and e ~= 1 then
+            break
+          end
+          if controlData:areSame(expected[e], controlData.actual[i]) then
+            found = true
+            table.remove(expected, e)
+            break
+          end
+        end
+        if not found and not controlData.contains then
+          ok = false
+          break
+        end
+      end
+    end
+    ok = ok and #expected < 1
+
+    local params = {
+      members = setmetatable({...}, {
+        __tostring = function(members)
+          local result = ''
+          for i = 1, #members do
+            if i > 1 then
+              result = result .. ', '
+            end
+            result = result .. tostring(members[i])
+          end
+          return result
+        end
+      })
+    }
+    if controlData.contains then
+      params.ordered = 'an ordered ' or 'a '
+      controlData:assert(ok, FailureMessage('expected {#} to be {!ordered}superset of {!members}', params),
+        FailureMessage('expected {#} to not be {!ordered}superset of {!members}', params))
+    else
+      params.ordered = controlData.ordered and 'ordered ' or ''
+      controlData:assert(ok, FailureMessage('expected {#} to have the same {!ordered}members as {!members}', params),
+        FailureMessage('expected {#} to not have the same {!ordered}members as {!members}', params))
+    end
+  end)
 end
