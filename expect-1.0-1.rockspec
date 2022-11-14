@@ -1,6 +1,6 @@
 rockspec_format = "3.0"
 package = "expect"
-version = "dev-1"
+version = "1.0-1"
 description = {
   summary = "BDD expect notation for LUA tests",
   homepage = "https://github.com/sveyret/expect",
