@@ -3,11 +3,11 @@ package = "expect"
 version = "dev-1"
 description = {
   summary = "BDD expect notation for LUA tests",
-  homepage = "https://github.com/sveyret/expect",
+  homepage = "https://github.com/Overkiz/expect",
   license = "MIT",
 }
 source = {
-  url = "git+https://github.com/sveyret/expect"
+  url = "git+https://github.com/Overkiz/expect"
 }
 test_dependencies = {
   "busted",
